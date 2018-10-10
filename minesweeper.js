@@ -1,27 +1,32 @@
 document.addEventListener('DOMContentLoaded', startGame)
 
 // Define your `board` object here!
-var board = {
-  cells:[{row:0,col:0,isMine:true,hidden:true},
-    {row:0,col:1,isMine:true,isMarked:false,hidden:true,surroundingMines:0},
-    {row:0,col:2,isMine:true,isMarked:false,hidden:true,surroundingMines:0},
-    {row:1,col:0,isMine:false,isMarked:false,hidden:true,surroundingMines:0},
-    {row:1,col:1,isMine:true,isMarked:false,hidden:true,surroundingMines:0},
-    {row:1,col:2,isMine:true,isMarked:false,hidden:true,surroundingMines:0},
-    {row:2,col:0,isMine:false,isMarked:false,hidden:true,surroundingMines:0},
-    {row:2,col:1,isMine:true,isMarked:false,hidden:true,surroundingMines:0},
-    {row:2,col:2,isMine:true,isMarked:false,hidden:true,surroundingMines:0}]
-  }
-
-
-
+var boardSize=0;
+var difficulty=0;
+var board={cells:[]};
 function startGame () {
+  boardSize = prompt("Board Size from 2-6")
+    difficulty = prompt("Difficulty 1-Most Difficult, 5-Easiest")
+    boardAut(boardSize, difficulty);
   for(var i=0; i<board.cells.length;i++){board.cells[i].surroundingMines=countSurroundingMines(board.cells[i]);}
   document.addEventListener('click',checkForWin)
   document.addEventListener('contextmenu',checkForWin)
+  document.addEventListener('auxclick',resetGame)
 
   // Don't remove this function call: it makes the game work!
   lib.initBoard()
+}
+function boardAut(size, difficulty) {
+  for (var r = 0; r < size; r++) {
+      for (var c = 0; c < size; c++) {
+          board.cells.push({
+              row: r,
+              col: c,
+              isMine: (Math.random() >=(difficulty * 0.1)),
+              hidden: true
+          })
+      }
+  }
 }
 
 // Define this function to look for a win condition:
@@ -56,4 +61,10 @@ function countSurroundingMines (cell) {
   }
   return amount;
 }
-
+function resetGame() {
+  document.getElementsByClassName("board")[0].innerHTML = "";
+  board = {
+      cells: []
+  };
+  startGame();
+}
